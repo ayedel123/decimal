@@ -1,0 +1,89 @@
+
+using System;
+
+public enum OperationType
+{
+    Add = 0,
+    Sub = 1,
+    Mul = 2,
+    Div = 3
+}
+
+public class HelloWorld
+{
+    static void WriteDecBits(decimal value){
+         
+     int[] bits = decimal.GetBits(value);
+        byte[] bytes = new byte[bits.Length * sizeof(int)];
+
+        for (int i = 0; i < bits.Length; i++)
+        {
+            byte[] intBytes = BitConverter.GetBytes(bits[i]);
+            Array.Copy(intBytes, 0, bytes, i * sizeof(int), sizeof(int));
+        }
+
+        //Console.WriteLine("Decimal value: " + value);
+
+        for (int i = bytes.Length -1; i >=0; i--)
+        {
+            //Console.Write("Byte " + i + ": ");
+            Console.Write(Convert.ToString(bytes[i], 2).PadLeft(8, '0'));
+        }
+        Console.Write("\n");
+    }
+    
+    static void WriteOper(decimal v1, decimal v2, OperationType operType,int numb)
+    {
+        string operSymbol = "";
+        decimal result = 0;
+
+        switch (operType)
+        {
+            case OperationType.Add:
+                operSymbol = "+";
+                result = v1 + v2;
+                break;
+            case OperationType.Sub:
+                operSymbol = "-";
+                result = v1 - v2;
+                break;
+            case OperationType.Mul:
+                operSymbol = "*";
+                result = v1 * v2;
+                break;
+            case OperationType.Div:
+                operSymbol = "/";
+                result = v1 / v2;
+                break;
+        }
+       
+        Console.Write("case "+numb+": "+v1.ToString() + " " + operSymbol + " " + v2.ToString() + " = " + result.ToString()+"\n");
+        
+        WriteDecBits(v1);
+        WriteDecBits(v2);
+        WriteDecBits(result);
+        //Console.Write("\n");
+    }
+
+    public static void Main(string[] args)
+    {
+        decimal v1 = Decimal.One;
+        decimal v2 = new decimal(2);
+        WriteOper(v1, v2, OperationType.Add,1);
+        WriteOper(new decimal(10000), new decimal(-10000), OperationType.Add,2);
+        WriteOper(new decimal(100000000), new decimal(99999999900000000), OperationType.Add,3);
+        WriteOper(new decimal(1.00000000), new decimal(999999999.00000000), OperationType.Add,4);
+        WriteOper(new decimal(10000000), new decimal(0.000000000000000000001), OperationType.Add,5);
+        WriteOper(new decimal(10000000), new decimal(0.000000000000000000001), OperationType.Add,6);
+        WriteOper(new decimal(-100.12345), new decimal(-0.87655), OperationType.Add,7);
+        WriteOper(new decimal(-0.99999999), new decimal(1), OperationType.Add,8);
+        WriteOper(new decimal(0xFFFF), new decimal(1), OperationType.Add,9);
+        WriteOper(new decimal(100000000), new decimal(0.000000000000000000006), OperationType.Add,10);
+        WriteOper(new decimal(100000000), new decimal(0.0000000000000000000046), OperationType.Add,11);
+        WriteOper(new decimal(-0.000), new decimal(0.0000000000), OperationType.Add,12);
+        WriteOper(new decimal(5.00001), new decimal(-5.00001), OperationType.Add,13);
+        WriteOper(Decimal.MaxValue/10, new decimal(0.1), OperationType.Add,14);
+        WriteOper(new decimal(9999999999.123456), new decimal(-1), OperationType.Add,15);
+  
+    }
+} 
